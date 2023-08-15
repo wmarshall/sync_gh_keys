@@ -60,10 +60,10 @@ def update_authorized_keys(
     authorized_keys_lines = []
     if authorized_keys_file.exists():
         with open(authorized_keys_file, "rt") as f:
-            authorized_keys_lines = f.readlines()
+            authorized_keys_lines = [line.rstrip() for line in f.readlines()]
     existing_authorized_keys = {}
     for i, line in enumerate(authorized_keys_lines):
-        if line.startswith("#"):
+        if line == "" or line.startswith("#"):
             continue
         try:
             existing_authorized_keys[i] = parse_key(line)
@@ -71,9 +71,15 @@ def update_authorized_keys(
             print(f"{e} on line {i}, ignoring line")
 
     # remove keys we've synced
-    existing_key_lines = {i for i, key in existing_authorized_keys.items() if key.comment.startswith(sentinel_id)}
+    existing_key_lines = {
+        i
+        for i, key in existing_authorized_keys.items()
+        if key.comment.startswith(sentinel_id)
+    }
     authorized_keys_lines = [
-        line for i, line in enumerate(authorized_keys_lines) if i not in existing_key_lines
+        line
+        for i, line in enumerate(authorized_keys_lines)
+        if i not in existing_key_lines
     ]
 
     # add synced keys
