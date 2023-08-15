@@ -1,0 +1,9 @@
+[Unit]
+Description=Run sync_gh_keys every 10 minutes
+
+[Timer]
+OnStartupSec=0
+OnUnitActiveSec=600
+
+[Install]
+WantedBy=default.target

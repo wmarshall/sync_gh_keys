@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import os
 import re
 from collections import namedtuple
 from pathlib import Path
@@ -110,12 +111,15 @@ def main():
         "--users",
         help="comma-separated list of users to sync, can be specified multiple times",
         action="append",
+        default=[],
     )
     args = parser.parse_args()
     users: set[str] = set()
-    for u in args.users:
-        u: str
-        users |= set(u.split(","))
+    if len(args.users) == 0:
+        args.users.append(os.environ.get("SYNC_GH_USERS", ""))
+    for user_arg in args.users:
+        user_arg: str
+        users |= set(u for u in user_arg.split(",") if u != "")
     keys_to_sync = {}
     print(f"Syncing keys for {sorted(users)}")
     for username in sorted(users):

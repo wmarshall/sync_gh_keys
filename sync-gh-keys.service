@@ -1,0 +1,7 @@
+[Unit]
+Description=Run sync_gh_keys script
+
+[Service]
+WorkingDirectory=%h/sync_gh_keys
+ExecStart=%h/sync_gh_keys/.venv/bin/python3 main.py
+Type=oneshot
