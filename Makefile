@@ -34,8 +34,8 @@ update_requirements: requirements-loose.txt
 
 .PHONY: install
 install: $(VENV)
-	ln -s $(PWD) $(HOME)/sync_gh_keys
+	ln -fs $(realpath $(PWD)) $(HOME)/sync_gh_keys
 	mkdir -p $(HOME)/.config/systemd/user/
-	install sync-gh-keys.service sync-gh-keys.timer $(HOME)/.config/systemd/user/
-	systemctl --user enable sync-gh-keys.timer
+	install -m0644 sync-gh-keys.service sync-gh-keys.timer $(HOME)/.config/systemd/user/
+	systemctl --user enable --now sync-gh-keys.timer
 	echo "Make sure to add SYNC_GH_USERS to ~/.config/environment.d/sync_gh_users.conf !"
