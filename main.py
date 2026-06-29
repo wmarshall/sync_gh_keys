@@ -43,8 +43,10 @@ def serialize_key(key: AuthorizedKey) -> str:
 
 
 def get_keys(username: str) -> set[str]:
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("NPM_TOKEN")
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
     try:
-        resp = requests.get(f"https://api.github.com/users/{username}/keys")
+        resp = requests.get(f"https://api.github.com/users/{username}/keys", headers=headers)
         resp.raise_for_status()
         return {ssh_key_obj["key"] for ssh_key_obj in resp.json()}
     except Exception as e:
